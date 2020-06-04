@@ -70,7 +70,7 @@ describe("Shopping List", function() {
     return chai
       .request(app)
       .post("/shopping-list")
-      .send(newItem)
+      .send(newItem) //***DAVID:   .send() is what we use to represent the body:{} header in a REQUEST. (not to be confused with the res.send() where we use to send back content in API code) 
       .then(function(res) {
         expect(res).to.have.status(201);
         expect(res).to.be.json;
@@ -80,7 +80,7 @@ describe("Shopping List", function() {
         // response should be deep equal to `newItem` from above if we assign
         // `id` to it from `res.body.id`
         expect(res.body).to.deep.equal(
-          Object.assign(newItem, { id: res.body.id })
+          Object.assign(newItem, { id: res.body.id }) //***DAVID:  Object.assign() is like when we add a new key to the setState(). It accepts 2 parameters, the object we are upgrading, and an object with keys we are trying to merge it to.
         );
       });
   });
