@@ -4,7 +4,7 @@ deploy:
   provider: heroku
   api_key:
     secure: QFeLzAwR8HEZlE427gipg3e0rsk2Nq9Gq/zaUgKZgUsyDCxtwjAcmt3DzsK4uIYmGwTMKiYmxY0KIx/7190DjWPj8piwJ6czwr2ZX0QxlI0VdArB/GDQ757W1JuIvPvBno3+dZVU85yGJt4dJkBY2Pun5CGaU11AbZsu98O5iMlwEfpff7Zgvtfy1jWIENcM7ShUmKBJW6s4EKag3eMnaybXAOFJxY0Yj73Etc0C0StnkjnF4XVqGX8sifSzfL6TSMqNyTHuTuBozankprXiRSkMXDqY/jKFNCk2GlPTb1ie5eyFHRGve4E6aVOJ4V5zWpF//EaQrLVM1AL/EYfzXvmk/0fVOrLUzF6NRqdBEviSSOp5vEGW3YbQQQOHiVf0CC59xtbKGpR2MQS6IosC/Y1YvXUFwXC97HXFrSwS7d2txt88ibiSUQZFwE3RvW8TG8Mf9IFQ1M+ZEqTjR36DRCwhqmrmbqJc9aK66cz3Jjoz/711jQsOpfw/sVIEbnHz3jQzx5uPuJPLS1WXp8bVg7rHq7vi4CsatCEz+KDogJO9PRE/dpLJlNQrmBSduPD/8uDq7eg5xlM29dkpT/Zef+UWVt5ndfEQXBC6IVzb4Y+Q64VDTSHMiagUqot1qXEVXC/f17kVSWTKhwbSyE4Pk0ELFkdE/53EaM9m9mMUwCc=
-  app: secure-beyond-64215
+  app: https://git.heroku.com/secure-beyond-64215.git
   on:
     repo: Acosta816/Node-shopping-list-integratios-tests
   skip_cleanup: 'true'
