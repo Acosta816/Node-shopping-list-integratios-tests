@@ -13,7 +13,7 @@ const expect = chai.expect;
 // see: https://github.com/chaijs/chai-http
 chai.use(chaiHttp);
 
-describe("Shopping List", function() {
+describe.skip("Shopping List", function() {
   // Before our tests run, we activate the server. Our `runServer`
   // function returns a promise, and we return the that promise by
   // doing `return runServer`. If we didn't return a promise here,
@@ -82,7 +82,9 @@ describe("Shopping List", function() {
         expect(res.body).to.deep.equal(
           Object.assign(newItem, { id: res.body.id }) //***DAVID:  Object.assign() is like when we add a new key to the setState(). It accepts 2 parameters, the object we are upgrading, and an object with keys we are trying to merge it to.
         );
+
       });
+
   });
 
   // test strategy:
@@ -149,4 +151,107 @@ describe("Shopping List", function() {
         })
     );
   });
-});
+});//**************************************************END of SHOPPINGLIST Test Suite******************************************************************************
+
+
+
+//Test Suite for Recipes Route
+describe("Recipes", ()=> {
+
+  before(function(){
+    return runServer();
+  });
+
+  after(function(){
+    return closeServer();
+  });
+
+  // test strategy for GET:
+  //  1: make request to `/recipes`
+  //  2: inspect response object and prove has correct data and is correct schema (shape, keys etc..).
+  it("get('/recipes') should list current recipe objects in the Recipes.items array", function(){
+    //must return a promise when working with async in mocha.
+    return chai
+      .request(app)
+      .get("/recipes")
+      .then(function(res){
+        expect(res).to.have.status(200);
+        expect(res).to.be.json;
+        expect(res.body).to.be.a("array");
+        //remember in server.js we created some default recipes that we create on app load. let's test the length of res obj to make sure they got generated.
+        expect(res.body.length).to.be.at.least(1);
+        ////(still in same "it" block) now we are testing the schema details of the response object.(we kinda already started by asserting it be an array)
+        //schema: each object array item should be an "object" w/keys "id", "name", and "ingredients"
+        const expectedKeys = ["id", "name", "ingredients"];
+        //cycle over each item in res and for each item, run the expect to include keys(expectedKeys);
+        res.body.forEach(recipe=> {
+          expect(recipe).to.be.a("object"); //just checking that each recipe is at least an object first.
+          expect(recipe).to.include.keys(expectedKeys);
+        });
+
+      });
+
+  });//----end of "it" block for get("/recipes")-------------------------------------------
+
+
+  //test strategy for post("/recipes")
+  //  1. make a post request to recipes with data for a new recipe using send() to include the data like you would in the request body.
+  // 2. inspect response object and prove it has right status code and that returned recipe has a newly generated "id" key.
+  it("post('/recipes') should add a recipe item to Recipes.items array ", function(){
+    
+    const newRecipe = {name: "hot chocolate", ingredients: ["water", "cocoa", "almond milk"]}; //prep new recipe to post.
+
+    return chai
+      .request(app)
+      .post("/recipes")
+      .send(newRecipe)
+      .then(function(res){
+        expect(res).to.have.status(201);
+        expect(res).to.be.json;
+        expect(res.body).to.be.a("object"); //when we post a new recipe object, we also get it returned to us to see what we posted.
+        expect(res.body).to.include.keys("id", "name", "ingredients");
+        expect(res.body.id).to.not.equal(null);//returned recipe object should now have an id after posting it.
+        /*now we are going to take the "newRecipe" blueprint we made above as a const and we are going to assign it the id that is in the 
+          res and we are going to compare that recipe to the returned recipe in res.body to make sure they match. */
+        const newRecipeWithId = Object.assign(newRecipe, {id: res.body.id});
+        expect(res.body).to.deep.equal(newRecipeWithId);
+      });
+
+  });//----end of "it" block for POST recipes----------------------------------------------
+
+  //test strategy:
+  //  1.declare some update data that we will pass. exmaple: let upgrade = {}
+  //  2.make GET request and decide which recipe you want to update, (take note of it's "id").
+  //  3.add the id of one of the recipes (we'll just pick the 1st) to the update data that you declared earlier, we will pass this update. ex: upgrade.id = res.body[0].id
+  //  4.make PUT request to put('/recipes/:upgrade.id) and send(upgrade)
+  //  5.then inspect the res object of the put to make sure it's status is 200 or 204 AND that the values match the upgrade object we declared earlier. 
+  it("put('/recipes/{insert-id-here}') should update a recipe item in Recipes.items array", function(){
+    const upgrade = {name: "hot chocolate", ingredients: ["mountain spring water", "costa rican cocoa", "cinnamon"]}; //it's ok to make a const because the keys will change sure, but not the vairable name. That's all const means, can't change name/memory location.
+    
+    return chai
+      .request(app)
+      .get('/recipes')
+      .then(function(res){
+        console.log("HEY HERES THE ID: ",res.body[0].id);
+        upgrade.id = res.body[0].id;
+        upgrade.name = res.body[0].name;
+        console.log("HEY HERES THE UPGRADE WITH ID: ",upgrade);
+        //within this same .then() block, we want to return chai.request(app).put
+        return chai
+          .request(app)
+          .put(`/recipes/${upgrade.id}`)
+          .send(upgrade)
+        })
+          .then(function(res){
+            console.log("HEY HERE IS THE RESPONSE BODY",res.body);
+            expect(res).to.have.status(204);
+            // expect(res).to.be.json;
+            // expect(res.body).to.be.a("object");
+            // expect(res.body).to.deep.equal(upgrade);
+          })
+
+
+  });//-------end of "it" block for PUT recipes/:id-------------------
+
+
+})//**************************************************end of Recipes Test Suite**************************************************

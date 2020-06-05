@@ -53,6 +53,7 @@ function createShoppingList() {
   return storage;
 }
 
+//---------------RECIPES MODEL--------------------------------------------------------------------------------------------
 const Recipes = {
   create: function(name, ingredients) {
     console.log("Creating a new recipe");
